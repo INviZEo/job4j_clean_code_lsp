@@ -9,31 +9,50 @@ public class SimpleMenu implements Menu {
     @Override
     public boolean add(String parentName, String childName, ActionDelegate actionDelegate) {
         boolean rsl = false;
-        actionDelegate.delegate();
-   /*  добавьте реализацию*/
-
+        MenuItem menuItemChild = new SimpleMenuItem(childName, actionDelegate);
+        if (findItem(parentName).isPresent()) {
+            findItem(parentName).get().menuItem.getChildren().add(menuItemChild);
+            rsl = true;
+        } else {
+            rootElements.add(menuItemChild);
+        }
         return rsl;
     }
 
     @Override
     public Optional<MenuItemInfo> select(String itemName) {
-        /*  добавьте реализацию*/
-        return null;
+        return findItem(itemName).map(itemInfo -> new MenuItemInfo(itemInfo.menuItem, itemInfo.number));
     }
 
     @Override
     public Iterator<MenuItemInfo> iterator() {
-        /*  добавьте реализацию*/
-        return null;
+        DFSIterator dfsIterator = new DFSIterator();
+        Iterator<MenuItemInfo> iterator = new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return dfsIterator.hasNext();
+            }
+
+            @Override
+            public MenuItemInfo next() {
+                ItemInfo itemInfo = dfsIterator.next();
+                return new MenuItemInfo(itemInfo.menuItem, itemInfo.number);
+            }
+        };
+        return iterator;
     }
 
     private Optional<ItemInfo> findItem(String name) {
         DFSIterator iterator = new DFSIterator();
+        Optional<ItemInfo> result = Optional.empty();
         while (iterator.hasNext()) {
-            iterator.stack.equals(name);
+            ItemInfo currentItem = iterator.next();
+            if (currentItem.menuItem.getName().equals(name)) {
+                result = Optional.of(currentItem);
+                break;
+            }
         }
-        /*  добавьте реализацию*/
-        return null;
+        return result;
     }
 
     private static class SimpleMenuItem implements MenuItem {
