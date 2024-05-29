@@ -122,6 +122,7 @@ public class SimpleMenu implements Menu {
 
         private MenuItem menuItem;
         private String number;
+        private int score;
 
         public ItemInfo(MenuItem menuItem, String number) {
             this.menuItem = menuItem;
